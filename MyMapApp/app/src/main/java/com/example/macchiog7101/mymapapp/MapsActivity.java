@@ -1,7 +1,14 @@
 package com.example.macchiog7101.mymapapp;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,8 +50,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(birth).title("Born here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(birth));
 
-        LatLng currentPostion = new LatLng(38, -77);
-        //http://blog.teamtreehouse.com/beginners-guide-location-android
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("MyMapsApp", "Failed permission check 1");
+            Log.d("MyMapsApp", Integer.toString(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)));
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 2);
+        }
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("MyMapsApp", "Failed permission check 2");
+            Log.d("MyMapsApp", Integer.toString(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)));
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+        }
+                 mMap.setMyLocationEnabled(true);
+
     }
+
+    public void toggle(View view) {
+        if (mMap.getMapType() == 1) {
+                         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        } else {
+                         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        }
+    }
+
 
 }
